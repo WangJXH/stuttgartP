@@ -1,0 +1,556 @@
+
+/*---------------------------------------------------------------------------*\
+ * Problem:     2d_Symes
+\*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*\
+ *		Definition von Konstanten			     *
+\*---------------------------------------------------------------------------*/
+
+static	TValue	bctime		= 10;	    /* [s] */
+static 	TValue	bctime_1 	= 20.5;		/* [s] */
+static 	TValue	bctime_2 	= 27;		/* [s] */
+
+/*---------------------------------------------------------------------------*\
+ *		Rand- und Anfangsbedingungen			 *
+\*---------------------------------------------------------------------------*/
+
+
+static TBool OpBegin(
+TCoord pos,
+TValue *val)
+{
+*val = 0.0;
+return TRUE;
+}
+
+static  TBool   Zero(
+TValue          t,                     
+TValue          s,                     
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  val[0] = 0.0;
+  return TRUE;
+}
+
+static  TBool   Flow(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = -0.01;
+  else
+  val[0] = 0;
+return TRUE;
+}
+
+static  TBool   TopVelo(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = 4e-6;
+  else
+  val[0] = 0;
+return TRUE;
+}
+
+static  TBool   BottomVelo(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = 4e-6;
+  else
+  val[0] = 0;
+return TRUE;
+}
+
+static  TBool   SideVelo(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = -5e-5;
+  else
+  val[0] = 0;
+return TRUE;
+}
+
+static  TBool   FP(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = 62e+3;
+  else 
+  val[0] = 0;
+  return TRUE;
+}
+
+static  TBool   F22(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  /* val[0] = -63e+3; */
+  val[0] = ((-63e+3)/(bctime_1-bctime))*(t-bctime);
+  else if (!(t>bctime_2))
+  val[0] = -63e+3 - ((-63e+3)/(bctime_2-bctime_1))*(t-bctime_1);
+  /* val[0] = -63e+3; */
+  else
+  val[0] = -63e+3;
+  return TRUE;
+}
+
+static  TBool   F11(
+TValue          t,                       
+TValue          s,                      
+TValue          u[],
+TCoord          n,
+TIndex          flag,
+TCount         *dofs,
+TIndex          dof[],
+TValue          val[])
+{
+ *dofs   = 1;
+  if (!(t>bctime))
+  val[0] = 0;
+  else if (!(t>bctime_1))
+  val[0] = ((63e+3)/(bctime_1-bctime))*(t-bctime);
+  /* val[0] = 63e+3; */
+  /* val[0] = 0; */
+  /* val[0] = -65e+3; */
+  else
+  val[0] = 63e+3;
+  return TRUE;
+}
+
+/*---------------------------------------------------------------------------*\
+ *		Randbedingungen	setzen					     *
+\*---------------------------------------------------------------------------*/
+
+static  void    BCInit(void)
+{
+
+  TIndex        u_x = 0;
+  TIndex        u_y = 1;
+  TIndex		v_x = 2;
+  TIndex		v_y = 3;
+  TIndex		vf_x= 4;
+  TIndex		vf_y= 5;
+  TIndex        Op	= 7;
+  TIndex        p	= 6;  
+ 
+  InitialCondAdd(Op,OpBegin);
+  
+/* Kantnr., Dof, Dirichlet-Rb. (Versch.), Neumann-Rb. (Kraft) */
+/* 1 : bottom set */
+/* 2 : right */
+/* 3 : top */ 
+/* 4 : left */
+
+  /* Kantnr., Dof, Dirichlet-Rb. (Versch.), Neumann-Rb. (Kraft) */
+/* 1 : bottom set */
+  BoundaryCondAdd(1, u_x, NULL, 	Zero);
+  BoundaryCondAdd(1, u_y, NULL, 	Zero);
+  BoundaryCondAdd(1, v_x, NULL, 		Zero);
+  BoundaryCondAdd(1, v_y, Zero,	NULL);
+  BoundaryCondAdd(1, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(1, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(1, Op , NULL, 		Zero);
+  BoundaryCondAdd(1, p  , NULL, 		Zero);
+      
+/* 2 : bottom out set */
+  BoundaryCondAdd(2, u_x, NULL, 	Zero);
+  BoundaryCondAdd(2, u_y, NULL, 	Zero);
+  BoundaryCondAdd(2, v_x, NULL,		Zero);
+  BoundaryCondAdd(2, v_y, Zero, 		Zero);
+  BoundaryCondAdd(2, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(2, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(2, Op , NULL, 		Zero);
+  BoundaryCondAdd(2, p  , Zero, 		NULL);
+  
+/* #  pore pressure on top and release for the second step */
+/* #  top press on the top and release for the second step */
+
+/* 3 : right set */
+  BoundaryCondAdd(3, u_x, NULL, 	Zero);
+  BoundaryCondAdd(3, u_y, NULL, 	Zero);
+  BoundaryCondAdd(3, v_x, Zero, 		NULL);  
+  BoundaryCondAdd(3, v_y, NULL,		Zero);
+  BoundaryCondAdd(3, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(3, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(3, Op , NULL, 		Zero);
+  BoundaryCondAdd(3, p  , NULL, 		Zero);
+
+/* #  fixed left */ 
+/* 4 : top out set */
+  BoundaryCondAdd(4, u_x, NULL, 	Zero);
+  BoundaryCondAdd(4, u_y, NULL, 	Zero);
+  BoundaryCondAdd(4, v_x, NULL, 		Zero);  
+  BoundaryCondAdd(4, v_y, NULL, 		F22);
+  BoundaryCondAdd(4, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(4, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(4, Op , NULL, 		Zero);
+  BoundaryCondAdd(4, p  , Zero, 		NULL);
+
+/* #  fixed left */ 
+/* 5 : top  set */
+  BoundaryCondAdd(5, u_x, NULL, 	Zero);
+  BoundaryCondAdd(5, u_y, NULL, 	Zero);
+  BoundaryCondAdd(5, v_x, NULL, 		Zero);  
+  BoundaryCondAdd(5, v_y, NULL, 		F22);
+  BoundaryCondAdd(5, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(5, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(5, Op , NULL, 		Zero);
+  BoundaryCondAdd(5, p  , NULL, 		Zero);
+
+/* 6 : right  set */
+/* You define confining pressure */
+  BoundaryCondAdd(6, u_x, NULL, 	Zero);
+  BoundaryCondAdd(6, u_y, NULL, 	Zero);
+  BoundaryCondAdd(6, v_x, NULL, 		F11);  
+  BoundaryCondAdd(6, v_y, NULL, 		Zero);
+  BoundaryCondAdd(6, vf_x,NULL, 		Zero);
+  BoundaryCondAdd(6, vf_y,NULL, 		Zero);
+  BoundaryCondAdd(6, Op , NULL, 		Zero);
+  BoundaryCondAdd(6, p  , NULL, 		Zero);
+
+
+}
+
+/*---------------------------------------------------------------------------*\
+ *		Ausgabe-Routine (benutzerdefinierbar!)			     *
+\*---------------------------------------------------------------------------*/
+
+static	void	AppOutput(
+PDaeData	data,
+TValue		t,
+PVector		y,
+PVector		yp)
+{
+  static TBool	first = TRUE;		/* Erster Aufruf? Dateien neu!	     */
+  static TIndex step  = 0;		/* Zaehler fuer Schritte	     */
+  static PElem	elem  = NULL;		/* Ausgabe-Element		     */
+  static PNode	node  = NULL;		/* Ausgabe-Knoten (-> 'outnode')     */
+  static PNode	node4 = NULL;
+  static PNode	node5 = NULL;
+  static TCount	teccounter = 1;		/* Zaehler fuer Tecplot-Ausgabe	     */
+  static TValue	timecounter = 0;	/* Zeitzaehler fuer Tecplot-ausgabe  */
+  TIndex	mat   = 0;		/* Material-Index		     */
+  TIndex	col;			/* Zaehler Ausgabe-Spalten	     */
+  TValue	integral;		/* Integralwert fuer 'outedge'	     */
+  TIndex	j;			/* Zaehler    interne Variablen      */
+  TVarDefArray	vararr;			/* Feld       interne Variablen      */
+  PVarDef	vardef;			/* Definition interne Variable	     */
+  char		fext [MAX_IDENTIFIER];	/* Dateiendung(en)		     */
+  char		fname[MAX_FILENAME];	/* Dateiname(n)			     */
+  char		cmd[256];		/* Macro-String			     */
+  char		txt[256];		/* Text-String als Zwischenspeicher  */
+  char		name[256];		/* Zur Umwandlung in Kleinbuchstaben */
+
+  if (first)
+  {
+    /*=== "Stempel" in die Ausgabe-Datei ====================================*/
+
+    AppOutputStamp();
+
+    /*___ Informationen ueber gesetzte Macros (outnode, outedge, ...) _______*/
+
+    if (outnode)
+      MainOutput("#\n"
+		 "# Outnode: %d\n", outnode);
+
+#if	(DIM==2)
+    if (outedge)
+    {
+      MainOutput("#\n"
+		 "# Outedge: %d\n", outedge);
+      MainOutput("# Outevar: %s\n", outevar);
+      MainOutput("# Outeneg: %s\n", outeneg ? "yes" : "no");
+    }
+#endif	/* DIM==2 */
+
+    MainOutput("#\n"
+	       "# Outvars: %s\n", outvars ? "yes" : "no");
+
+    if (outsave)
+      MainOutput("#\n"
+		 "# Outsave: %d\n", outsave);
+   }
+   
+    /*=== Initialisierungen =================================================*/
+
+    /*___ Ausgabe-Element holen (nur fuer homogene Netze: 1. Element) _______*/
+
+    elem = MeshFirstElem(mesh_);
+    Return((elem != NULL), ("Ausgabe-Element 1 ungueltig"), /**/);
+
+    /*___ Ausgabe-Knoten gemaess Macro 'outnode' (-> cmd-Datei) _____________*/
+
+    if (outnode)
+    {
+      node = NodeFromIndex(outnode);
+      Return((node != NULL), ("Ausgabe-Knoten %d ungueltig", outnode), /**/);
+    }
+
+    /*___ Fest definierte Knoten fuer spezielle Datenausgaben _______________*/
+
+    /* hier speziell: DFG-Benchmark-Problem */
+
+    node4 = NodeFromIndex(4);
+    node5 = NodeFromIndex(5);
+
+    Return((node4 != NULL && node5 != NULL),
+	   ("Einer der Ausgabe-Knoten 4, 5 ist ungueltig"), /**/);
+
+    /*=== Ueberschrift fuer gnuplot ausgeben ================================*/
+
+  if (first)
+  {
+    col = 1;
+    MainOutput("#\n"
+	       "# %02d:%-12s ", col, "t");	col++;
+    MainOutput(  "%02d:%-13s ", col, "h");	col++;
+    MainOutput(  "%02d:%-13s ", col, "err_u");	col++;
+    MainOutput(  "%02d:%-13s ", col, "err_q");	col++;
+    MainOutput(  "%02d:%-13s ", col, "err");	col++;
+
+    /*___ Freiheitsgrade am Ausgabe-Knoten __________________________________*/
+
+    if (outnode)
+    {
+      for (j=0 ; j<NodeDofs(node) ; j++)
+      {
+	MainOutput("%02d:%-13s ", col, ShapeDof(elem->shape, j).name); col++;
+      }
+    }
+
+    /*___ Interne und History-Variablen am Ausgabe-Knoten ___________________*/
+
+    if (outnode)
+    {
+      vararr = elem->phys->var;		/* Bezug: Physik des 1. Elementes!   */
+      for (j=0 ; j<ArrayUsed(vararr) ; j++)
+      {
+	vardef = &ArrayAt(vararr, j);
+
+	if ((!vardef->hist && vardef->index != -1)
+	 || ( vardef->hist && vardef->useit))
+	{
+	  StringToLower(vardef->name, name);
+	  sprintf(txt, "%s[P%d]", name, outnode);
+	  MainOutput("%02d:%-13s ", col, txt);	col++;
+	}
+      }
+    }
+
+    /*___ Integralwert ueber die Ausgabe-Kante 'outedge' (-> cmd-Datei) _____*/
+
+#if	(DIM==2)
+    if (outedge)
+    {
+      StringToLower(outevar, name);
+      sprintf(txt, "%c%s[E%d]", (outeneg ? '-' : '+'), name, outedge);
+      MainOutput("%02d:%-13s ", col, txt);	col++;
+    }
+#endif	/* DIM==2 */
+
+    /*___ Spezielle Datenausgaben ___________________________________________*/
+
+#if	(DIM==2)
+    MainOutput("%02d:%-13s ", col, "dofs");		col++;
+    MainOutput("%02d:%-13s ", col, "elems");		col++;
+#endif	/* DIM==2 */
+
+    MainOutput("\n");
+  }
+
+  MainOutput("%16.9e %16.9e %16.9e %16.9e %16.9e ",
+	     t, data->sca.h,
+	     data->sca.errest_y, data->sca.errest_q, data->sca.errest);
+
+  /*___ Freiheitsgrade am Ausgabe-Knoten ____________________________________*/
+
+  if (outnode)
+  {
+    for (j=0 ; j<NodeDofs(node) ; j++)
+      MainOutput("%16.9e ", NodeGetDofValue(node,j));
+  }
+
+  /*___ Interne und History-Variablen am Ausgabe-Knoten _____________________*/
+
+  if (outnode)
+  {
+    vararr = elem->phys->var;		/* Bezug: Physik des 1. Elementes!   */
+    for (j=0 ; j<ArrayUsed(vararr) ; j++)
+    {
+      vardef = &ArrayAt(vararr, j);
+
+      if ((!vardef->hist && vardef->index != -1)
+       || ( vardef->hist && vardef->useit))
+      {
+	MainOutput("%16.9e ", NodeCalcVar(node, mat, vardef->name));
+      }
+    }
+  }
+
+  /*___ Integralwert ueber die Ausgabe-Kante 'outedge' (-> cmd-Datei) _____*/
+
+#if	(DIM==2)
+  if (outedge)
+  {
+    integral = IntegrateVarOrDof(outevar, outedge);
+    if (outeneg)
+      integral *= -1.0;
+    MainOutput("%16.9e ", integral);
+  }
+#endif	/* DIM==2 */
+
+  /*___ Spezielle Datenausgaben _____________________________________________*/
+
+#if	(DIM==2)
+  MainOutput("%16.9e ", (TValue)MeshDofs(mesh_));
+  MainOutput("%16.9e ", (TValue)MeshElems(mesh_));
+#endif	/* DIM==2 */
+
+  MainOutput("\n");
+
+  /*=== Sonstige Ausgaben / Aktionen (nicht mehr in Ausgabe-Datei!) =========*/
+
+  /*___ Dateien mit internen Variablen / History-Variablen schreiben ________*/
+
+  if (outvars)
+  {
+    vararr = elem->phys->var;		/* Bezug: Physik des 1. Elementes!   */
+    for (j=0 ; j<ArrayUsed(vararr) ; j++)
+    {
+      vardef = &ArrayAt(vararr, j);
+
+      if ((!vardef->hist && vardef->index != -1)
+       || ( vardef->hist && vardef->useit))
+      {
+	StringToLower(vardef->name, fext);
+	sprintf(fname, "%s.%s", mainProblem_, fext);
+	FileWriteScaVar(fname, mesh_->name, !first, t, vardef->name);
+      }
+    }
+  }
+
+  /*___ TecPlot-Ausgabe fuer paraview angepasst______________________________*/
+
+  if (tecout && first)
+  {
+    //sprintf(cmd, "writetec tec/tecplot_%.5f.dat", t);
+  //  sprintf(cmd, "writetec tec/tecplot_%04d_%1.4e.dat", step, t);
+    sprintf(cmd, "writetec tec/tecplot_%05d.dat", step);
+    MacroRunMode(MM_Default, cmd, FALSE);
+    teccounter++;
+  }
+
+  if (tecout && !first)
+  {
+    if(t - timecounter >= 0)
+    {
+      //sprintf(cmd, "writetec tec/tecplot_%.5f.dat", t);
+    //  sprintf(cmd, "writetec tec/tecplot_%04d_%1.4e.dat", step, t);
+      sprintf(cmd, "writetec tec/tecplot_%05d.dat", step, t);
+      MacroRunMode(MM_Default, cmd, FALSE);
+      timecounter += tecsave;
+    }
+  } 
+  
+//  if (tecout && first)
+//  {
+//    sprintf(cmd, "writetec tec/tecplot_%.4f.dat", timecounter);
+//    MacroRunMode(MM_Default, cmd, FALSE);
+//    teccounter++;
+//  }
+//  
+//  if (tecout && !first)
+//  {
+//    /*___ Tecplot-Ausgabe abhaengig von Anzahl der Zeitschritte...
+//	  ...oder abhaengig von aktuellem Zeitschritt _______________________*/
+//    // if (teccounter % 20 == 0 || teccounter == 1 )
+//    if(t - timecounter >= 0)
+//    {
+//      sprintf(cmd, "writetec tec/tecplot_%.4f.dat", timecounter);
+//      MacroRunMode(MM_Default, cmd, FALSE);
+//      timecounter += 0.01;
+//    }
+//    teccounter++;
+//  }
+
+  /*___ Netz und Status speichern (alle 'outsave' Schritte) _________________*/
+
+  step++;
+  if (outsave && (step % outsave == 0))
+  {
+    sprintf(cmd, "save state_%.5f mesh gzip", t);
+    MacroRunMode(MM_Default, cmd, FALSE);
+  }
+
+  if (first)
+    first = FALSE;    
+}
