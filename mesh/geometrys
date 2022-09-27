@@ -158,4 +158,61 @@ export mesh "/scratch/local1/jwang/pandas2/src/app/apps/2d_Symes/mesh/files/2d_s
 ## #python /scratch/local1/jwang/pandas2/src/app/apps/mesh2pandas cubit 2d_symst.g ./ Podyphas mesh_2d
 
 
+reset
+new
+# "*y
+## body
+create vertex   0.0 0.0 0.0
+create vertex   1.5 0.0 0.0  # modify x 
+create vertex	15.0 0.0 0.0
+create vertex	15.0 75.0 0.0
+create vertex   1.5 75.0 0.0  # modify x
+create vertex	0.0 75.0 0.0
+
+## notch
+create vertex   7.5 37.0 0.0
+create vertex	15.0 37.0 0.0
+create vertex	15.0 38.0 0.0
+create vertex	7.5 38.0 0.0
+
+## split
+create vertex   0 35.0 0
+create vertex   15.0 35.0 0
+create vertex   15.0 40.0 0
+create vertex   0 40.0 0
+
+create surface vertex 7 8 9 10
+create surface vertex 1 2 3 12 11
+create surface vertex 14 13 4 5 6
+create surface vertex 11 12 8 7 10 9 13 14
+
+imprint all
+merge all
+
+surface 1 4 size auto factor 5
+mesh surface 1 4
+surface 2 3 size auto factor 5
+mesh surface 2 3
+
+block 1 Surface 2 3 4
+block 1 element type SHELL8
+#initial crack
+block 2 Surface 1
+block 2 element type SHELL8
+
+#merge all
+
+Sideset 1 curve 5 # bottom 
+Sideset 2 curve 6 # bottom out
+Sideset 3 curve 2 7 11 16 20 #right symmetry
+Sideset 4 curve 12 #top out
+Sideset 5 curve 13 #top
+Sideset 6 curve 9 14 22  #left
+
+## export
+set large exodus file off
+export mesh "/scratch/local1/jwang/pandas2/src/app/apps/2d_Symes/mesh/files/2d_symsn2.g" dimension 2 block 1 2 overwrite
+
+
+## #python /scratch/local1/jwang/pandas2/src/app/apps/mesh2pandas cubit 2d_symst.g ./ Podyphas mesh_2d
 

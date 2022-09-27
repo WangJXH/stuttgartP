@@ -7,12 +7,12 @@ scrmsg     on
 
 #--- Dreiecksnetz erzeugen in 3-d nicht moeglich
 read 	2d_Symes.shape
-read 	mesh/files/mesh_2dho.nodes
-read 	mesh/files/mesh_2dho.elems
-read 	mesh/files/mesh_2dho.edges
+read 	mesh/files/mesh_2dhole.nodes
+read 	mesh/files/mesh_2dhole.elems
+read 	mesh/files/mesh_2dhole.edges
 read 	2d_Symes.ivars
 read 	2d_Symes.param
-read 	mesh/files/mesh_2dho.elmat
+read 	mesh/files/mesh_2dhole.elmat
 
 #==============================================================================
 #--- Matrixtyp, Vorkond. etc.
@@ -103,8 +103,8 @@ go
 #--- Berechnung 3 Fluss
 #==============================================================================
 
-# init    500
-# go
+init    150
+go
 
 #--- Status speichern
 save     final

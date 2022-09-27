@@ -8,7 +8,7 @@
 \*---------------------------------------------------------------------------*/
 
 static	TValue	bctime		= 10;	    /* [s] */
-static 	TValue	bctime_1 	= 20.5;		/* [s] */
+static 	TValue	bctime_1 	= 100;		/* [s] */
 static 	TValue	bctime_2 	= 27;		/* [s] */
 
 /*---------------------------------------------------------------------------*\
@@ -177,12 +177,9 @@ TValue          val[])
   if (!(t>bctime))
   val[0] = 0;
   else if (!(t>bctime_1))
-  val[0] = ((63e+3)/(bctime_1-bctime))*(t-bctime);
-  /* val[0] = 63e+3; */
-  /* val[0] = 0; */
-  /* val[0] = -65e+3; */
+  val[0] = -((65e+3)/(bctime_1-bctime))*(t-bctime);
   else
-  val[0] = 63e+3;
+  val[0] = -65e+3;
   return TRUE;
 }
 
@@ -211,33 +208,36 @@ static  void    BCInit(void)
 /* 4 : left */
 
   /* Kantnr., Dof, Dirichlet-Rb. (Versch.), Neumann-Rb. (Kraft) */
-/* 1 : bottom set */
+/* 1 : bottom   set */
+/* fix y direction, fluid can flow out from the tube */
   BoundaryCondAdd(1, u_x, NULL, 	Zero);
-  BoundaryCondAdd(1, u_y, NULL, 	Zero);
+  BoundaryCondAdd(1, u_y, Zero, 	NULL);
   BoundaryCondAdd(1, v_x, NULL, 		Zero);
   BoundaryCondAdd(1, v_y, Zero,	NULL);
   BoundaryCondAdd(1, vf_x,NULL, 		Zero);
   BoundaryCondAdd(1, vf_y,NULL, 		Zero);
   BoundaryCondAdd(1, Op , NULL, 		Zero);
-  BoundaryCondAdd(1, p  , NULL, 		Zero);
+  BoundaryCondAdd(1, p  , Zero, 		NULL);
       
 /* 2 : bottom out set */
+/* impermeable, fix y direction */
   BoundaryCondAdd(2, u_x, NULL, 	Zero);
-  BoundaryCondAdd(2, u_y, NULL, 	Zero);
+  BoundaryCondAdd(2, u_y, Zero, 	NULL);
   BoundaryCondAdd(2, v_x, NULL,		Zero);
-  BoundaryCondAdd(2, v_y, Zero, 		Zero);
+  BoundaryCondAdd(2, v_y, Zero, 		NULL);
   BoundaryCondAdd(2, vf_x,NULL, 		Zero);
   BoundaryCondAdd(2, vf_y,NULL, 		Zero);
   BoundaryCondAdd(2, Op , NULL, 		Zero);
-  BoundaryCondAdd(2, p  , Zero, 		NULL);
+  BoundaryCondAdd(2, p  , NULL, 		Zero);
   
 /* #  pore pressure on top and release for the second step */
 /* #  top press on the top and release for the second step */
 
 /* 3 : right set */
+/* - confining pressure */
   BoundaryCondAdd(3, u_x, NULL, 	Zero);
   BoundaryCondAdd(3, u_y, NULL, 	Zero);
-  BoundaryCondAdd(3, v_x, Zero, 		NULL);  
+  BoundaryCondAdd(3, v_x, NULL, 		F11);  
   BoundaryCondAdd(3, v_y, NULL,		Zero);
   BoundaryCondAdd(3, vf_x,NULL, 		Zero);
   BoundaryCondAdd(3, vf_y,NULL, 		Zero);
@@ -245,39 +245,39 @@ static  void    BCInit(void)
   BoundaryCondAdd(3, p  , NULL, 		Zero);
 
 /* #  fixed left */ 
-/* 4 : top out set */
+/* - \sigma_22 on the top */
   BoundaryCondAdd(4, u_x, NULL, 	Zero);
   BoundaryCondAdd(4, u_y, NULL, 	Zero);
   BoundaryCondAdd(4, v_x, NULL, 		Zero);  
-  BoundaryCondAdd(4, v_y, NULL, 		F22);
+  BoundaryCondAdd(4, v_y, NULL, 		Zero);
   BoundaryCondAdd(4, vf_x,NULL, 		Zero);
   BoundaryCondAdd(4, vf_y,NULL, 		Zero);
   BoundaryCondAdd(4, Op , NULL, 		Zero);
-  BoundaryCondAdd(4, p  , Zero, 		NULL);
+  BoundaryCondAdd(4, p  , NULL, 		Zero);
 
 /* #  fixed left */ 
 /* 5 : top  set */
+/* - \sigma_22 on the top; */
+/* - open tube */ 
   BoundaryCondAdd(5, u_x, NULL, 	Zero);
   BoundaryCondAdd(5, u_y, NULL, 	Zero);
   BoundaryCondAdd(5, v_x, NULL, 		Zero);  
-  BoundaryCondAdd(5, v_y, NULL, 		F22);
+  BoundaryCondAdd(5, v_y, NULL, 		Zero);
   BoundaryCondAdd(5, vf_x,NULL, 		Zero);
   BoundaryCondAdd(5, vf_y,NULL, 		Zero);
   BoundaryCondAdd(5, Op , NULL, 		Zero);
-  BoundaryCondAdd(5, p  , NULL, 		Zero);
+  BoundaryCondAdd(5, p  , Zero, 		NULL);
 
 /* 6 : right  set */
-/* You define confining pressure */
+/* - fix x direction */
   BoundaryCondAdd(6, u_x, NULL, 	Zero);
   BoundaryCondAdd(6, u_y, NULL, 	Zero);
-  BoundaryCondAdd(6, v_x, NULL, 		F11);  
+  BoundaryCondAdd(6, v_x, Zero, 		NULL);  
   BoundaryCondAdd(6, v_y, NULL, 		Zero);
   BoundaryCondAdd(6, vf_x,NULL, 		Zero);
   BoundaryCondAdd(6, vf_y,NULL, 		Zero);
   BoundaryCondAdd(6, Op , NULL, 		Zero);
   BoundaryCondAdd(6, p  , NULL, 		Zero);
-
-
 }
 
 /*---------------------------------------------------------------------------*\
