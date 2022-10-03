@@ -249,7 +249,7 @@ static  void    BCInit(void)
   BoundaryCondAdd(4, u_x, NULL, 	Zero);
   BoundaryCondAdd(4, u_y, NULL, 	Zero);
   BoundaryCondAdd(4, v_x, NULL, 		Zero);  
-  BoundaryCondAdd(4, v_y, NULL, 		Zero);
+  BoundaryCondAdd(4, v_y, NULL, 		F22);
   BoundaryCondAdd(4, vf_x,NULL, 		Zero);
   BoundaryCondAdd(4, vf_y,NULL, 		Zero);
   BoundaryCondAdd(4, Op , NULL, 		Zero);
@@ -262,7 +262,7 @@ static  void    BCInit(void)
   BoundaryCondAdd(5, u_x, NULL, 	Zero);
   BoundaryCondAdd(5, u_y, NULL, 	Zero);
   BoundaryCondAdd(5, v_x, NULL, 		Zero);  
-  BoundaryCondAdd(5, v_y, NULL, 		Zero);
+  BoundaryCondAdd(5, v_y, NULL, 		F22);
   BoundaryCondAdd(5, vf_x,NULL, 		Zero);
   BoundaryCondAdd(5, vf_y,NULL, 		Zero);
   BoundaryCondAdd(5, Op , NULL, 		Zero);
