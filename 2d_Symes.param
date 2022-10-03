@@ -34,5 +34,5 @@ rho_FR    		= 1.0e-6			# kg/mm^3            : Effektive Dichte Fluessigkeit
 rho_SR    		= 3.0e-6			# kg/mm^3            : Effektive Dichte Festkoerper
 k_F      		  = 2e-8		    # mm/s	             : Durchlaessigkeit 
 Grav			    = 10000			  # mm/s^2	           : Gravitation
-MAX_0 			  = 6.75e3	  # N/m^2	     : Initiales pseudoelastisches Potential = 1/(1-phi)*G_c/(4*eps)=6.75e7N/m^2(when phi=0.999)
+MAX_0 			  = 6.75e3	  # N/m^2	     : Initiales pseudoelastisches Potential = 1/(1-phi)*G_c/(4*eps)=6.75e7N/m^2(when phi=0.9999)
 
