@@ -9,7 +9,8 @@
 
 static	TValue	bctime		= 10;	    /* [s] */
 static 	TValue	bctime_1 	= 100;		/* [s] */
-static 	TValue	bctime_2 	= 27;		/* [s] */
+static 	TValue	SIG22_l 	= 30;		/* [s] */
+static 	TValue	SIG22_u 	= 50;		/* [s] */
 
 /*---------------------------------------------------------------------------*\
  *		Rand- und Anfangsbedingungen			 *
@@ -152,14 +153,13 @@ TValue          val[])
  *dofs   = 1;
   if (!(t>bctime))
   val[0] = 0;
-  else if (!(t>bctime_1))
-  /* val[0] = -63e+3; */
-  val[0] = ((-63e+3)/(bctime_1-bctime))*(t-bctime);
-  else if (!(t>bctime_2))
-  val[0] = -63e+3 - ((-63e+3)/(bctime_2-bctime_1))*(t-bctime_1);
-  /* val[0] = -63e+3; */
+  else if (!(t>SIG22_l))
+/* loading */ 
+  val[0] = ((-63e+3)/(SIG22_l-bctime))*(t-bctime);
+  else if (!(t>SIG22_u))
+  val[0] = -63e+3 - ((-63e+3)/(SIG22_u-SIG22_l))*(t-SIG22_l);
   else
-  val[0] = -63e+3;
+  val[0] = 0;
   return TRUE;
 }
 
@@ -237,7 +237,7 @@ static  void    BCInit(void)
 /* - confining pressure */
   BoundaryCondAdd(3, u_x, NULL, 	Zero);
   BoundaryCondAdd(3, u_y, NULL, 	Zero);
-  BoundaryCondAdd(3, v_x, NULL, 		F11);  
+  BoundaryCondAdd(3, v_x, NULL, 		Zero);  
   BoundaryCondAdd(3, v_y, NULL,		Zero);
   BoundaryCondAdd(3, vf_x,NULL, 		Zero);
   BoundaryCondAdd(3, vf_y,NULL, 		Zero);
