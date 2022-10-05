@@ -237,7 +237,7 @@ static  void    BCInit(void)
 /* - confining pressure */
   BoundaryCondAdd(3, u_x, NULL, 	Zero);
   BoundaryCondAdd(3, u_y, NULL, 	Zero);
-  BoundaryCondAdd(3, v_x, NULL, 		Zero);  
+  BoundaryCondAdd(3, v_x, NULL, 		Zero);  /* LOADING */   
   BoundaryCondAdd(3, v_y, NULL,		Zero);
   BoundaryCondAdd(3, vf_x,NULL, 		Zero);
   BoundaryCondAdd(3, vf_y,NULL, 		Zero);

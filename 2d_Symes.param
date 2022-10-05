@@ -8,7 +8,7 @@ matset=1
 mu 	     		  = 1.1538e7		# kg mm / s^2/mm^2   : Lame Konstante Festkoerper
 mu_f 	     	  = 1.000e-6		# kg/mm/s            : Dynamische Viskositaet Fluessigkeit
 lambda 	 		  = 1.7307e7		# kg mm / s^2/mm^2   : Lame Konstante Festkoerper
-Phase_G    	  = 2.7e+8		  # kg/(s^2)	         : Risswiderstand
+Phase_G    	  = 2.7e-1		  # kg/(s^2)	         : Risswiderstand
 Phase_M 		  = 0		 	 	    # kg/(m*s)	         : Mobilitaetsparameter (Riss)
 Phase_eta 		= 0.001 	 	  # -			             : Residuale Steifigkeit (Riss)
 Phase_eps 		= 10e-2	      # m			             : Verschmierte Rissoeffnung
@@ -24,7 +24,7 @@ matset=2
 mu 	     		  = 1.1538e7		# kg mm / s^2/mm^2   : Lame Konstante Festkoerper
 mu_f 	     	  = 1.000e-6		# kg/mm/s            : Dynamische Viskositaet Fluessigkeit
 lambda 	 		  = 1.7307e7		# kg mm / s^2/mm^2   : Lame Konstante Festkoerper
-Phase_G    	  = 2.7e+8		  # kg/(s^2)	         : Risswiderstand
+Phase_G    	  = 2.7e-1		  # kg/(s^2)	         : Risswiderstand
 Phase_M 		  = 0		 	 	    # kg/(m*s)	         : Mobilitaetsparameter (Riss)
 Phase_eta 		= 0.001 	 	  # -			             : Residuale Steifigkeit (Riss)
 Phase_eps 		= 10e-2	      # m			             : Verschmierte Rissoeffnung
@@ -34,5 +34,5 @@ rho_FR    		= 1.0e-6			# kg/mm^3            : Effektive Dichte Fluessigkeit
 rho_SR    		= 3.0e-6			# kg/mm^3            : Effektive Dichte Festkoerper
 k_F      		  = 2e-8		    # mm/s	             : Durchlaessigkeit 
 Grav			    = 10000			  # mm/s^2	           : Gravitation
-MAX_0 			  = 0	  # N/m^2	     : Initiales pseudoelastisches Potential = 1/(1-phi)*G_c/(4*eps)=6.75e7N/m^2(when phi=0.9999)
+MAX_0 			  = 6.75e3	  # N/m^2	     : Initiales pseudoelastisches Potential = 1/(1-phi)*G_c/(4*eps)=6.75e7N/m^2(when phi=0.999)
 
